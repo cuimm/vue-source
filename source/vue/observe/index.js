@@ -5,7 +5,26 @@ import Observer from './observer'
 function initData(vm) {
   let data = vm.$options.data;
   data = vm.$data = typeof data === 'function' ? data.call(vm) : data || {};
+  //代理$data
+  for (let key in data) {
+    proxyData(vm, '$data', key);
+  }
   new Observer(data);
+}
+
+/*
+* 数据代理
+* vm.message = vm.$data.message
+* */
+function proxyData(vm, source, key) {
+  Object.defineProperty(vm, key, {
+    get() {
+      return vm[source][key];
+    },
+    set(newValue) {
+      vm[source][key] = newValue;
+    },
+  });
 }
 
 /*

@@ -1,4 +1,4 @@
-import Observer from './observer'
+import {observe} from './observer'
 
 const originArrayMethods = Array.prototype;
 const arrayMethods = Object.create(originArrayMethods);
@@ -29,7 +29,7 @@ methods.forEach(method => {
 
 export function observeArray(data) {
   for (let i = 0; i < data.length; i++) {
-    new Observer(data[i]);
+    observe(data[i]);
   }
 }
 

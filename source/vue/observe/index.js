@@ -1,4 +1,4 @@
-import Observer from './observer'
+import {observe} from './observer'
 /*
 * 初始化data
 * */
@@ -9,7 +9,7 @@ function initData(vm) {
   for (let key in data) {
     proxyData(vm, '$data', key);
   }
-  new Observer(data);
+  observe(data);
 }
 
 /*

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 const vm = new Vue({
-  el: 'app',
+  el: '#app',
   data() {
     return {
       message: 'hello cuimm',

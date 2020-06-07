@@ -7,7 +7,10 @@ class CompilerUtils {
   * vm: vue 实例
   * */
   static compileText(node, vm) {
-    node.textContent = node.textContent.replace(defaultRE, (...args) => {
+    if (!node.exp) {
+      node.exp = node.textContent;
+    }
+    node.textContent = node.exp.replace(defaultRE, (...args) => {
       return CompilerUtils.getValue(vm, args[1]);
     });
   }

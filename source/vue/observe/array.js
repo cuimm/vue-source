@@ -23,6 +23,10 @@ methods.forEach(method => {
     }
     inserted && observeArray(inserted);
     console.log(`调用数组的-${method}-方法`);
+
+    // 通知视图更新
+    this.__ob__.dep.notify();
+
     return result;
   }
 });

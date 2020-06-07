@@ -4,7 +4,7 @@ import Watcher from './observe/watcher'
 import Compiler from './compiler'
 
 function Vue(options) {
-  this._init(options)
+  this._init(options);
 }
 
 Vue.prototype._init = function (options) {
@@ -21,16 +21,16 @@ Vue.prototype.$mount = function () {
   let vm = this;
   let el = vm.$options.el;
   el = vm.$el = query(el);
-
   const updateComponent = () => {
-    new Compiler(el, vm);
+    vm._update();
   };
 
   new Watcher(vm, updateComponent);
 };
 
-Vue.prototype._update = () => {
+Vue.prototype._update = function () {
+  console.log('刷新页面.............');
   new Compiler(this.$el, this);
 };
 
-export default Vue
+export default Vue;

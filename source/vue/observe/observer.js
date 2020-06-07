@@ -41,21 +41,23 @@ function defineReactive(data, key, value) {
   let dep = new Dep();
 
   Object.defineProperty(data, key, {
+    //** 收集依赖
     get() {
       /* 只要对当前的属性进行了取值操作，就会将当前的watcher存入进去 */
-      console.log('获取数据', value);
+      // console.log('获取数据=', value);
       if (Dep.target) { // 页面最初渲染的时候是用的渲染watcher
         // dep.addSub(Dep.target); // 存入的watcher会重复，如果重复会造成数据更新时页面多次渲染
         dep.depend(); // 该方法可以让dep中存入watcher，同样watcher中也可以存入dep，实现多对多的关系
       }
       return value;
     },
+    //** 通知依赖更新
     set(newValue) {
+      // console.log('设置数据=', newValue);
       if (value === newValue) return;
       observe(newValue); // 设置的值为新的对象时,需要对这个新的对象进行监控
       value = newValue;
       dep.notify();
-      console.log('设置数据', newValue);
     },
   });
 }

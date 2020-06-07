@@ -34,10 +34,13 @@ class Watcher {
     popTarget();
   }
   update() {
-    console.log('update');
+    // this.get(); // 如果立即调用get，就会导致页面立即刷新 => 异步来更新
+    queueWatcher(this);
+  }
+  run() {
     this.get();
   }
-  /* 同一个watcher不应该重复记录dep => 相互记忆 */
+  /* 同一个watcher不应该重复记录dep，相同的依赖只需要记录一次 => 相互记忆 */
   addDep(dep) {
     let id = dep.id;
     if (!this.depsId.has(id)) {
@@ -48,7 +51,57 @@ class Watcher {
   }
 }
 
+let has = [];
+let queue = [];
+function flushQueue() {
+  queue.forEach(watcher => { watcher.run(); });
+
+  // 恢复正常，下一轮更新时继续使用
+  has = {};
+  queue = [];
+}
+
+function queueWatcher(watcher) {
+  const id = watcher.id;
+  if (!has[id]) {
+    has[id] = true;
+    queue.push(watcher); // 相同的watcher只会存一个到队列中
+
+    // 延迟清空队列（异步方法会等待所有同步方法执行完毕后调用此方法）
+    $nextTick(flushQueue); // setTimeout(flushQueue, 0)
+  }
+}
+
+/*
+* nextTick 内部实现
+* 异步方法会等待所有同步方法执行完毕后调用此方法
+* */
+let callbacks = [];
+function flushCallbacks() {
+  callbacks.forEach(cb => cb());
+}
+/* 内部用队列实现 */
+function $nextTick(cb) {
+  // 异步是分顺序执行的, 会先执行（微任务：promise mutationObserver）（宏任务：setImmediate setTimeout）
+  callbacks.push(cb);
+
+  if (Promise) {
+    return Promise.resolve().then(flushCallbacks); // then 方法是异步的
+  }
+  if (MutationObserver) { // MutationObserver是H5的一个异步api
+    let _observe = new MutationObserver(flushCallbacks);
+    let textNode = document.createTextNode(1);
+    _observe.observe(textNode, {characterData: true}); // 监控文本变化
+    textNode.textContent = 2;
+    return;
+  }
+  if (setImmediate) {
+    setImmediate(flushCallbacks, 0);
+  }
+  setTimeout(flushCallbacks, 0);
+}
 export default Watcher;
+
 
 /*
 * Vue2.0 => 一个组件对应一个watcher

@@ -1,5 +1,5 @@
 import Dep from './dep'
-import {observeArray, arrayMethods} from './array'
+import {observeArray, arrayMethods, dependArray} from './array'
 
 /*
 * 定义响应式数据变化
@@ -25,6 +25,7 @@ function defineReactive(data, key, value) {
         dep.depend(); // 依赖收集：该方法可以让dep中存入watcher，同样watcher中也可以存入dep，实现多对多的关系
         if (childOb && Array.isArray(value)) {
           childOb.dep.depend(); // 针对数组的依赖收集：数组也收集当前渲染watcher
+          dependArray(value); // 收集数组依赖
         }
       }
       return value;

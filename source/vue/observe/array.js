@@ -37,6 +37,19 @@ export function observeArray(data) {
   }
 }
 
+/*
+* 递归收集数据依赖
+* */
+export function dependArray(array) {
+  for (let i = 0; i < array.length; i++) {
+    let arrayItem = array[i]; // arrayItem 有可能也是一个数组
+    arrayItem.__ob__ && arrayItem.__ob__.dep.depend();
+    if (Array.isArray(arrayItem)) {
+      dependArray(arrayItem); // 递归
+    }
+  }
+}
+
 export {
   arrayMethods,
 }

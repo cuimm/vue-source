@@ -14,6 +14,7 @@ const vm = new Vue({
         },
       },
       color: ['red', 'blue', 'yellow', {'black': 'special'}],
+      arr: [[1,2,3], 4, 5, 6],
     };
   },
   computed: {
@@ -37,3 +38,9 @@ setTimeout(() => {
 
 window.vm = vm;
 console.log('vm:', vm);
+// vm.arr[0].push(100)
+
+
+/*
+* Object.freeze：可以禁止定义get和set方法
+* */

@@ -7,6 +7,8 @@ let id = 0;
 
 /*
 * Watcher
+* watcher 有三种：渲染watcher、计算属性watcher、用户watcher($watch)
+* ------------------------------------------------------------
 * vm: 当前组件Vue实例
 * expOrFn: 监控表达式。传入的可能是一个表达式，也可能是一个函数
 * cb: 回调函数。vm.$watch('message', cb)
@@ -68,7 +70,11 @@ function queueWatcher(watcher) {
     queue.push(watcher); // 相同的watcher只会存一个到队列中
 
     // 延迟清空队列（异步方法会等待所有同步方法执行完毕后调用此方法）
-    $nextTick(flushQueue); // setTimeout(flushQueue, 0)
+    // $nextTick(flushQueue); // setTimeout(flushQueue, 0)
+    setTimeout(() => {
+      console.log('setTimeout');
+      flushQueue()
+    }, 0)
   }
 }
 
@@ -82,7 +88,7 @@ function flushCallbacks() {
 }
 /* 内部用队列实现 */
 function $nextTick(cb) {
-  // 异步是分顺序执行的, 会先执行（微任务：promise mutationObserver）（宏任务：setImmediate setTimeout）
+  // 异步是分顺序执行的, 会先执行：（微任务：promise mutationObserver），再执行：（宏任务：setImmediate setTimeout）
   callbacks.push(cb);
 
   if (Promise) {
@@ -96,7 +102,7 @@ function $nextTick(cb) {
     return;
   }
   if (setImmediate) {
-    setImmediate(flushCallbacks, 0);
+    return setImmediate(flushCallbacks, 0);
   }
   setTimeout(flushCallbacks, 0);
 }
@@ -104,7 +110,7 @@ export default Watcher;
 
 
 /*
-* Vue2.0 => 一个组件对应一个watcher
+* Vue2.0 => 一个组件对应一个watcher（组件级更新）
 *
 * 1、默认会创建一个渲染watcher，这个渲染watcher默认会执行
 * 2、pushTarget(this) => Dep.target = watcher

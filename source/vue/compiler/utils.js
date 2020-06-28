@@ -11,7 +11,7 @@ class CompilerUtils {
       node.exp = node.textContent;
     }
     node.textContent = node.exp.replace(defaultRE, (...args) => {
-      return CompilerUtils.getValue(vm, args[1]);
+      return JSON.stringify(CompilerUtils.getValue(vm, args[1]));
     });
   }
   static getValue(vm, exp) {

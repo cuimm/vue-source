@@ -21,11 +21,11 @@ function defineReactive(data, key, value) {
       /* 只要对当前的属性进行了取值操作，就会将当前的watcher存入进去 */
       // console.log('获取数据=', value);
       if (Dep.target) { // 页面最初渲染的时候是用的渲染watcher
-        // dep.addSub(Dep.target); // 存入的watcher会重复，如果重复会造成数据更新时页面多次渲染
+        // dep.addSub(Dep.target); // 存入的watcher会重复，如果重复会造成数据更新时页面多次渲染 => dep.depend()
         dep.depend(); // 依赖收集：该方法可以让dep中存入watcher，同样watcher中也可以存入dep，实现多对多的关系
         if (childOb && Array.isArray(value)) {
           childOb.dep.depend(); // 针对数组的依赖收集：数组也收集当前渲染watcher
-          dependArray(value); // 收集数组依赖
+          dependArray(value); // 递归收集数组依赖
         }
       }
       return value;
@@ -56,7 +56,7 @@ class Observer {
   constructor(data) {
     this.dep = new Dep(); // 此dep专门为数组而设
 
-    // 每个对象，包括数组，都有一个__ob__属性，返回的是当前Observer实例（主要用于数据的依赖收集）
+    // 每个引用类型（对象，包括数组），都有一个__ob__属性，返回的是当前Observer实例（主要用于数组的依赖收集）
     Object.defineProperty(data, '__ob__', {
       get: () => this,
     });

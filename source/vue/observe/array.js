@@ -6,7 +6,7 @@ const arrayMethods = Object.create(originArrayMethods);
 const methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'sort', 'splice']
 
 methods.forEach(method => {
-  arrayMethods[method] = function (...args) {
+  arrayMethods[method] = function (...args) { // 切片编程
     const result = originArrayMethods[method].apply(this, args);
     let inserted;
     // 只对新增的属性在进行观察
@@ -21,7 +21,8 @@ methods.forEach(method => {
       default:
         break;
     }
-    inserted && observeArray(inserted);
+    inserted && observeArray(inserted); // 对数组新增项进行观察
+
     console.log(`调用数组的-${method}-方法`);
 
     // 通知视图更新
@@ -38,7 +39,7 @@ export function observeArray(data) {
 }
 
 /*
-* 递归收集数据依赖
+* 递归收集数据依赖 [[[[...]]]]
 * */
 export function dependArray(array) {
   for (let i = 0; i < array.length; i++) {

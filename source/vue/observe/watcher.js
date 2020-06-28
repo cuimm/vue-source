@@ -1,4 +1,5 @@
-import {pushTarget, popTarget} from './dep'
+import {pushTarget, popTarget} from './dep';
+import CompilerUtils from '../compiler/utils';
 
 /*
 * 每个Watcher实例都对应一个唯一的标识
@@ -15,11 +16,16 @@ let id = 0;
 * options: 一些其他参数
 * */
 class Watcher {
-  constructor(vm, expOrFn, cb, options) {
+  constructor(vm, expOrFn, cb = () => {}, options = {}) {
     this.vm = vm;
     this.expOrFn = expOrFn;
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn;
+    } else {
+      // 构建一个getter方法, 调用此方法会将vm上对应的表达式计算出来
+      this.getter = () => {
+        return CompilerUtils.getValue(this.vm, expOrFn);
+      };
     }
     this.cb = cb;
     this.options = options;
@@ -28,19 +34,34 @@ class Watcher {
     this.deps = [];
     this.depsId = new Set(); // 保存当前watcher的dep
 
-    this.get();
+    if (this.options.user) {
+      this.user = true; // 标记用户自定义watcher
+    }
+    this.immediate = options.immediate;
+
+    this.value = this.get();
+
+    // 如果immediate为true, 则立马执行用户自定义回调函数
+    if (this.immediate) {
+      this.cb(this.value);
+    }
   }
   get() {
     pushTarget(this); // 渲染watcher dep.target = watcher
-    this.getter && this.getter();
+    const result = this.getter.call(this.vm); // 将getter方法内部this指向当前vue实例
     popTarget();
+    return result;
   }
   update() {
     // this.get(); // 如果立即调用get，就会导致页面立即刷新 => 异步来更新
     queueWatcher(this);
   }
   run() {
-    this.get();
+    const value = this.get();
+    if (this.value !== value) {
+      this.cb(value, this.value);
+      this.value = value;
+    }
   }
   /* 同一个watcher不应该重复记录dep，相同的依赖只需要记录一次 => 相互记忆 */
   addDep(dep) {
@@ -70,11 +91,7 @@ function queueWatcher(watcher) {
     queue.push(watcher); // 相同的watcher只会存一个到队列中
 
     // 延迟清空队列（异步方法会等待所有同步方法执行完毕后调用此方法）
-    // $nextTick(flushQueue); // setTimeout(flushQueue, 0)
-    setTimeout(() => {
-      console.log('setTimeout');
-      flushQueue()
-    }, 0)
+    $nextTick(flushQueue); // setTimeout(flushQueue, 0)
   }
 }
 

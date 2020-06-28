@@ -5,6 +5,7 @@ const vm = new Vue({
   data() {
     return {
       message: 'hello cuimm',
+      content: 'content',
       info: {
         name: 'cuimm',
         age: 18,
@@ -19,6 +20,23 @@ const vm = new Vue({
   },
   computed: {
 
+  },
+  watch: {
+    message(newValue, oldValue) {
+      console.log('meaasge change', newValue, oldValue);
+    },
+    content: {
+      handler(newValue, oldValue) {
+        console.log('content change', newValue, oldValue);
+      },
+      immediate: true,
+    },
+    info(newValue, oldValue) {
+      console.log('1. info change', newValue, oldValue);
+    },
+    'info.address.country'(newValue, oldValue) {
+      console.log('2. info change', newValue, oldValue);
+    },
   },
 });
 

@@ -1,4 +1,5 @@
 import {observe} from './observer'
+
 /*
 * 初始化data
 * */
@@ -36,9 +37,21 @@ function initComputed(vm) {
 
 /*
 * 初始化watch
+* watch内部是通过Watcher实现的
 * */
 function initWatch(vm) {
+  const watch = vm.$options.watch;
+  for (let key in watch) {
+    let userDef = watch[key];
+    if (userDef.handler) {
+      userDef = userDef.handler;
+    }
+    createWatcher(vm, key, userDef, {immediate: userDef.immediate});
+  }
+}
 
+function createWatcher(vm, expr, handler, options) {
+  vm.$watch(expr, handler, {user: true, ...options});
 }
 
 /*
@@ -55,4 +68,4 @@ export const initState = function (vm) {
   if (options.watch) {
     initWatch(vm);
   }
-}
+};

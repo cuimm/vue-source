@@ -33,4 +33,9 @@ Vue.prototype._update = function () {
   new Compiler(this.$el, this);
 };
 
+Vue.prototype.$watch = function (expr, callback, options) {
+  const vm = this;
+  new Watcher(vm, expr, callback, options);
+};
+
 export default Vue;

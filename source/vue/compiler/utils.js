@@ -11,7 +11,8 @@ class CompilerUtils {
       node.exp = node.textContent;
     }
     node.textContent = node.exp.replace(defaultRE, (...args) => {
-      return JSON.stringify(CompilerUtils.getValue(vm, args[1]));
+      const value = CompilerUtils.getValue(vm, args[1]);
+      return typeof value === 'object' ? JSON.stringify(value) : value;
     });
   }
   static getValue(vm, exp) {

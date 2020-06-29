@@ -16,10 +16,14 @@ const vm = new Vue({
       },
       color: ['red', 'blue', 'yellow', {'black': 'special'}],
       arr: [[1,2,3], 4, 5, 6, {color: 999}],
+      firstName: 'Cui',
+      lastName: 'MengMeng',
     };
   },
   computed: {
-
+    fullName() {
+      return this.firstName + this.lastName;
+    },
   },
   watch: {
     message(newValue, oldValue) {

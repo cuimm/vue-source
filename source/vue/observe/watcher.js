@@ -1,5 +1,6 @@
 import {pushTarget, popTarget} from './dep';
 import CompilerUtils from '../compiler/utils';
+import Dep from "@source/vue/observe/dep";
 
 /*
 * 每个Watcher实例都对应一个唯一的标识
@@ -39,7 +40,10 @@ class Watcher {
     }
     this.immediate = options.immediate;
 
-    this.value = this.get();
+    this.lazy = options.lazy; // lazy表示该watcher是一个计算属性watcher
+    this.dirty = this.lazy;  // 表示该计算属性是不是需要重新计算
+
+    this.value = this.lazy ? undefined : this.get();
 
     // 如果immediate为true, 则立马执行用户自定义回调函数
     if (this.immediate) {
@@ -65,11 +69,23 @@ class Watcher {
   }
   /* 同一个watcher不应该重复记录dep，相同的依赖只需要记录一次 => 相互记忆 */
   addDep(dep) {
-    let id = dep.id;
-    if (!this.depsId.has(id)) {
-      this.deps.push(id);
-      this.depsId.add(id); // 让watcher记住当前的dep
+    let depId = dep.id;
+    if (!this.depsId.has(depId)) {
+      this.deps.push(dep);
+      this.depsId.add(depId); // 让watcher记住当前的dep
       dep.addSub(this); // 让dep记录当前的watcher
+    }
+  }
+  evaluate() {
+    if (this.dirty) {
+      this.value = this.get();
+      this.dirty = false;
+    }
+  }
+  depend() {
+    let len = this.deps.length;
+    while (len--) {
+      this.deps[len].depend();
     }
   }
 }

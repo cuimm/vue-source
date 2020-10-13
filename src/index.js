@@ -15,7 +15,7 @@ const vm = new Vue({
         },
       },
       color: ['red', 'blue', 'yellow', {'black': 'special'}],
-      arr: [[1,2,3], 4, 5, 6, {color: 999}],
+      arr: [[1, 2, 3], 4, 5, 6, {color: 999}],
       firstName: 'Cui',
       lastName: 'MengMeng',
     };
@@ -66,3 +66,41 @@ console.log('vm:', vm);
 /*
 * Object.freeze：可以禁止定义get和set方法
 * */
+
+/********** dom diff ************/
+console.log('**********dom diff************');
+/********** dom diff ************/
+
+import h, {patch, render, createElm} from './vdom';
+
+let oldVNode = h('ul', {id: 'container'},
+    h('li', {class: 'li01', style: {background: 'red'}, key: 'li-1'}, 'li-1'),
+    h('li', {class: 'li02', style: {background: 'yellow'}}, 'li-2'),
+    h('li', {class: 'li03', style: {background: 'blue'}}, 'li-3'),
+);
+console.log('oldVNode', oldVNode);
+
+const container = document.getElementById('app');
+// render(oldVNode, container);
+
+const newVNode = h('div', {id: 'container'},
+    h('li', {class: 'li01', style: {background: 'red'}, key: 'li-1'}, 'li-1'),
+    h('li', {class: 'li02', style: {background: 'yellow'}}, 'li-2'),
+    h('li', {class: 'li03', style: {background: 'blue'}}, 'li-3'),
+);
+setTimeout(() => {
+  patch(oldVNode, newVNode);
+}, 1000);
+/*
+{
+  tag: 'ul',
+  children: [
+    {
+      tag: 'li',
+      text: 123,
+    }
+  ],
+}
+
+*/
+

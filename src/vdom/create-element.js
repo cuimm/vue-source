@@ -13,6 +13,6 @@ export function vnode(tag, props, key, children, text) {
     props,
     key,
     children,
-    text
+    text,
   };
 }

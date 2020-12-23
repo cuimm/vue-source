@@ -1,5 +1,5 @@
 /**
  * 入口进行api的整合
  */
-export {default} from './h'; // 默认导出
-export {patch, render, createElm} from './patch';
+export {default as h} from './h';
+export {render, patch} from './patch';

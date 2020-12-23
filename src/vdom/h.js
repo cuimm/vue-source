@@ -9,7 +9,7 @@ import {vnode} from "@src/vdom/create-element";
  */
 export default function h(tag, props = {}, ...children) {
   const key = props.key;
-  delete props.key;
+  key && delete props.key;
 
   children = children.map(child => {
     if (typeof child === 'object') {

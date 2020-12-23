@@ -32,6 +32,10 @@ methods.forEach(method => {
   }
 });
 
+/**
+ * 数组数据劫持
+ * @param data
+ */
 export function observeArray(data) {
   for (let i = 0; i < data.length; i++) {
     observe(data[i]);

@@ -138,7 +138,7 @@ function updateChildren(parent, oldChildren, newChildren) {
     } else if (isSameVnode(oldStartVnode, newEndVnode)) { // 头尾比对 abcd -> dcba
       console.log('头尾比对');
       patch(oldStartVnode, newEndVnode);
-      parent.insertBefore(oldStartVnode.el, oldEndVnode.el.nextSibling); // 将老得头节点插入到老节点的下一个兄弟节点之前
+      parent.insertBefore(oldStartVnode.el, oldEndVnode.el.nextSibling); // 将老得头节点插入到老的尾节点的下一个兄弟节点之前
       oldStartVnode = oldChildren[++oldStartIndex];
       newEndVnode = newChildren[--newEndIndex];
     } else if (isSameVnode(oldEndVnode, newStartVnode)) {  // 尾头比对
@@ -148,7 +148,7 @@ function updateChildren(parent, oldChildren, newChildren) {
       oldEndVnode = oldChildren[--oldEndIndex];
       newStartVnode = newChildren[++newStartIndex];
     } else { // abcd->ecafn ==> e(abcd)->e(cafn) ==> ec(abd)->ec(afn) ==> eca(bd)->eca(fn) ==> ecaf(bd)->ecaf(n) ==> ecafn(bd)->ecafn ===> 删除老节点中多余的bd节点
-      // 先拿新节点的第一项，去老节点中匹配，如果匹配不到直接将这个节点插入到老节点开头的第一项；如果能查到，则直接移动老节点
+      // 先拿新节点的第一项，去老节点中匹配，如果匹配不到直接将这个节点插入到老节点开头索引的前面；如果能查到，则直接移动老节点
       // 可能老节点中会有剩余，如有剩余则直接删除掉老节点中的剩余节点
       let moveIndex = oldKeyToIdx[newStartVnode.key];
       if (moveIndex === undefined) {

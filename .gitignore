@@ -6,3 +6,5 @@ node_modules/
 *.ntvs*
 *.njsproj
 *.sln
+
+.DS_Store

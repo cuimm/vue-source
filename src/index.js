@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 const vm = new Vue({
   el: '#app',
   data() {
@@ -15,8 +16,8 @@ const vm = new Vue({
       },
       color: ['red', 'blue', 'yellow', {'black': 'special'}],
       arr: [[1, 2, 3, [4, 5, {a: 'id'}]], 4, 5, 6, {color: 999}],
-      firstName: 'Cui',
-      lastName: 'MengMeng',
+      firstName: 'cui',
+      lastName: 'mm',
     };
   },
   computed: {
@@ -41,6 +42,19 @@ const vm = new Vue({
       console.log('2. info change', newValue, oldValue);
     },
   },
+  render(h) {
+    return h('div', {
+          style: {
+            color: 'red',
+            fontSize: '18px',
+          },
+          class: 'message',
+        },
+        h('h1', {style: {background: 'yellow'}}, this.message),
+        h('h2', {}, this.fullName),
+        h('h2', {style: {color: 'blue'}}, this.info.address.country + this.info.address.province),
+    );
+  },
 });
 
 // 批量更新（vue的特点是批量更新，防止重复渲染）
@@ -62,10 +76,6 @@ console.log('vm:', vm);
 /*
 * Object.freeze：可以禁止定义get和set方法
 * */
-
-
-
-
 
 
 /*
@@ -143,7 +153,6 @@ setTimeout(() => {
 */
 
 
-
 /******************** 2）老节点没孩子 && 新节点有孩子 【】**************************/
 /*
 // 2）老节点没孩子 && 新节点有孩子
@@ -175,7 +184,8 @@ let oldVnode = h('ul', {id: 'container'},
 );
 render(oldVnode, container);
 
-// abcd -> abcdef
+
+// 3.1)abcd -> abcdef
 // let newVnode = h('ul', {id: 'container', class: 'container'},
 //     h('li', {key: 'a', class: 'a', style: {background: 'red', color: '#fff'}}, 'aaa'),
 //     h('li', {key: 'b', class: 'b', style: {background: 'yellow'}}, 'b'),
@@ -185,7 +195,7 @@ render(oldVnode, container);
 //     h('li', {key: 'f', class: 'f', style: {background: 'grey'}}, 'f'),
 // );
 
-// abcd -> efabcd
+// 3.2)abcd -> efabcd
 // let newVnode = h('ul', {id: 'container', class: 'container'},
 //     h('li', {key: 'e', class: 'e', style: {background: 'pink'}}, 'e'),
 //     h('li', {key: 'f', class: 'f', style: {background: 'yellow'}}, 'f'),
@@ -195,7 +205,7 @@ render(oldVnode, container);
 //     h('li', {key: 'd', class: 'd', style: {background: 'green'}}, 'd'),
 // );
 
-// abcd -> bcda
+// 3.3)abcd -> bcda
 // let newVnode = h('ul', {id: 'container', class: 'container'},
 //     h('li', {key: 'd', class: 'd', style: {background: 'green'}}, 'd'),
 //     h('li', {key: 'c', class: 'c', style: {background: 'blue'}}, 'c'),
@@ -203,7 +213,7 @@ render(oldVnode, container);
 //     h('li', {key: 'a', class: 'a', style: {background: 'red'}}, 'a'),
 // );
 
-// abcd -> bcda
+// 3.4)abcd -> bcda
 // let newVnode = h('ul', {id: 'container', class: 'container'},
 //     h('li', {key: 'd', class: 'd', style: {background: 'green'}}, 'd'),
 //     h('li', {key: 'a', class: 'a', style: {background: 'red'}}, 'a'),
@@ -211,7 +221,7 @@ render(oldVnode, container);
 //     h('li', {key: 'c', class: 'c', style: {background: 'blue'}}, 'c'),
 // );
 
-// abcd -> eafcn
+// 3.5)abcd -> eafcn
 let newVnode = h('ul', {id: 'container', class: 'container'},
     h('li', {key: 'e', class: 'e', style: {background: 'pink'}}, 'e'),
     h('li', {key: 'c', class: 'c', style: {background: 'blue'}}, 'ccc'),

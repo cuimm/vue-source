@@ -75,10 +75,11 @@ function initWatch(vm) {
   const watch = vm.$options.watch;
   for (let key in watch) {
     let userDef = watch[key];
+    let handler = userDef;
     if (userDef.handler) {
-      userDef = userDef.handler;
+      handler = userDef.handler;
     }
-    createWatcher(vm, key, userDef, {immediate: userDef.immediate});
+    createWatcher(vm, key, handler, {immediate: userDef.immediate});
   }
 }
 
